@@ -6,19 +6,7 @@ pebble_deck packs eight console lines onto the screen. deck_lite keeps the same 
 cyberdeck colours, but shows only **three** of them, split top / middle / bottom, in text big enough to read at a
 glance. There is no permanent clock — "Time" is just one of the things you can put in a panel.
 
-```
-┌──────────────────┐
-│       BPM        │
-│        72        │
-├──────────────────┤
-│      STEPS       │
-│       8432       │
-├──────────────────┤
-│      ALT FT      │
-│       312        │
-│              87% │
-└──────────────────┘
-```
+![Default layout](screenshots/default.png)
 
 Default layout: **Heart rate / Steps / Altitude**, with the battery percentage small in the bottom-right corner.
 
