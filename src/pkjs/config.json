@@ -2,7 +2,273 @@
   {
     "type": "heading",
     "id": "main-heading",
-    "defaultValue": "Console HUD Settings"
+    "defaultValue": "Deck Lite Settings"
+  },
+  {
+    "type": "section",
+    "items": [
+      {
+        "type": "heading",
+        "defaultValue": "Panels"
+      },
+      {
+        "type": "text",
+        "defaultValue": "The screen is split into three equal panels. Pick what each one shows."
+      },
+      {
+        "type": "select",
+        "messageKey": "Panel1",
+        "label": "Top panel",
+        "defaultValue": "6",
+        "options": [
+          {
+            "label": "Blank",
+            "value": "0"
+          },
+          {
+            "label": "Time (clock)",
+            "value": "1"
+          },
+          {
+            "label": "Date",
+            "value": "2"
+          },
+          {
+            "label": "Battery",
+            "value": "3"
+          },
+          {
+            "label": "Free Memory",
+            "value": "4"
+          },
+          {
+            "label": "Compass Heading",
+            "value": "5"
+          },
+          {
+            "label": "Heart Rate (BPM)",
+            "value": "6"
+          },
+          {
+            "label": "Steps",
+            "value": "7"
+          },
+          {
+            "label": "Weather",
+            "value": "8"
+          },
+          {
+            "label": "Altitude (ft)",
+            "value": "9"
+          },
+          {
+            "label": "Custom Web API",
+            "value": "10"
+          },
+          {
+            "label": "Second Timezone",
+            "value": "11"
+          },
+          {
+            "label": "Third Timezone",
+            "value": "12"
+          },
+          {
+            "label": "Moon Phase",
+            "value": "13"
+          },
+          {
+            "label": "Heart Rate Variability (HRV)",
+            "value": "14"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "messageKey": "Panel2",
+        "label": "Middle panel",
+        "defaultValue": "7",
+        "options": [
+          {
+            "label": "Blank",
+            "value": "0"
+          },
+          {
+            "label": "Time (clock)",
+            "value": "1"
+          },
+          {
+            "label": "Date",
+            "value": "2"
+          },
+          {
+            "label": "Battery",
+            "value": "3"
+          },
+          {
+            "label": "Free Memory",
+            "value": "4"
+          },
+          {
+            "label": "Compass Heading",
+            "value": "5"
+          },
+          {
+            "label": "Heart Rate (BPM)",
+            "value": "6"
+          },
+          {
+            "label": "Steps",
+            "value": "7"
+          },
+          {
+            "label": "Weather",
+            "value": "8"
+          },
+          {
+            "label": "Altitude (ft)",
+            "value": "9"
+          },
+          {
+            "label": "Custom Web API",
+            "value": "10"
+          },
+          {
+            "label": "Second Timezone",
+            "value": "11"
+          },
+          {
+            "label": "Third Timezone",
+            "value": "12"
+          },
+          {
+            "label": "Moon Phase",
+            "value": "13"
+          },
+          {
+            "label": "Heart Rate Variability (HRV)",
+            "value": "14"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "messageKey": "Panel3",
+        "label": "Bottom panel",
+        "defaultValue": "9",
+        "options": [
+          {
+            "label": "Blank",
+            "value": "0"
+          },
+          {
+            "label": "Time (clock)",
+            "value": "1"
+          },
+          {
+            "label": "Date",
+            "value": "2"
+          },
+          {
+            "label": "Battery",
+            "value": "3"
+          },
+          {
+            "label": "Free Memory",
+            "value": "4"
+          },
+          {
+            "label": "Compass Heading",
+            "value": "5"
+          },
+          {
+            "label": "Heart Rate (BPM)",
+            "value": "6"
+          },
+          {
+            "label": "Steps",
+            "value": "7"
+          },
+          {
+            "label": "Weather",
+            "value": "8"
+          },
+          {
+            "label": "Altitude (ft)",
+            "value": "9"
+          },
+          {
+            "label": "Custom Web API",
+            "value": "10"
+          },
+          {
+            "label": "Second Timezone",
+            "value": "11"
+          },
+          {
+            "label": "Third Timezone",
+            "value": "12"
+          },
+          {
+            "label": "Moon Phase",
+            "value": "13"
+          },
+          {
+            "label": "Heart Rate Variability (HRV)",
+            "value": "14"
+          }
+        ]
+      },
+      {
+        "type": "toggle",
+        "messageKey": "ShowLabels",
+        "label": "Show small captions (BPM, STEPS, ...)",
+        "defaultValue": true
+      },
+      {
+        "type": "toggle",
+        "messageKey": "ShowDividers",
+        "label": "Show divider lines between panels",
+        "defaultValue": true
+      }
+    ]
+  },
+  {
+    "type": "section",
+    "items": [
+      {
+        "type": "heading",
+        "defaultValue": "Battery"
+      },
+      {
+        "type": "select",
+        "messageKey": "BatteryCorner",
+        "label": "Small battery % position",
+        "defaultValue": "4",
+        "options": [
+          {
+            "label": "Off",
+            "value": "0"
+          },
+          {
+            "label": "Top left",
+            "value": "1"
+          },
+          {
+            "label": "Top right",
+            "value": "2"
+          },
+          {
+            "label": "Bottom left",
+            "value": "3"
+          },
+          {
+            "label": "Bottom right",
+            "value": "4"
+          }
+        ]
+      }
+    ]
   },
   {
     "type": "section",
@@ -21,7 +287,7 @@
         "type": "color",
         "messageKey": "TextColor",
         "defaultValue": "0x00FFFF",
-        "label": "Text / HUD Color"
+        "label": "Text Color"
       }
     ]
   },
@@ -35,7 +301,7 @@
       {
         "type": "toggle",
         "messageKey": "TemperatureUnit",
-        "label": "Use Fahrenheit (°F)",
+        "label": "Use Fahrenheit (\u00b0F)",
         "defaultValue": false
       },
       {
@@ -55,191 +321,6 @@
         "min": -12,
         "max": 14,
         "step": 1
-      }
-    ]
-  },
-  {
-    "type": "section",
-    "items": [
-      {
-        "type": "heading",
-        "defaultValue": "Console Complication Layout"
-      },
-      {
-        "type": "select",
-        "messageKey": "ActiveSlots1",
-        "label": "Slot 1 (Top Line)",
-        "defaultValue": "1",
-        "options": [
-          { "label": "Disabled / Blank", "value": "0" },
-          { "label": "Date [SYS]", "value": "1" },
-          { "label": "Battery Power [PWR]", "value": "2" },
-          { "label": "Free Heap Memory [MEM]", "value": "3" },
-          { "label": "Compass Direction [NAV]", "value": "4" },
-          { "label": "Heart Rate [BPM]", "value": "5" },
-          { "label": "Step Counter [STP]", "value": "6" },
-          { "label": "Weather Condition [MET]", "value": "7" },
-          { "label": "Altitude [ALT]", "value": "8" },
-          { "label": "Custom Web API [API]", "value": "9" },
-          { "label": "Second Timezone [TZ2]", "value": "10" },
-          { "label": "Third Timezone [TZ3]", "value": "11" },
-          { "label": "Moon Phase [LUN]", "value": "12" },
-          { "label": "Heart Rate Variability [HRV]", "value": "13" }
-        ]
-      },
-      {
-        "type": "select",
-        "messageKey": "ActiveSlots2",
-        "label": "Slot 2",
-        "defaultValue": "2",
-        "options": [
-          { "label": "Disabled / Blank", "value": "0" },
-          { "label": "Date [SYS]", "value": "1" },
-          { "label": "Battery Power [PWR]", "value": "2" },
-          { "label": "Free Heap Memory [MEM]", "value": "3" },
-          { "label": "Compass Direction [NAV]", "value": "4" },
-          { "label": "Heart Rate [BPM]", "value": "5" },
-          { "label": "Step Counter [STP]", "value": "6" },
-          { "label": "Weather Condition [MET]", "value": "7" },
-          { "label": "Altitude [ALT]", "value": "8" },
-          { "label": "Custom Web API [API]", "value": "9" },
-          { "label": "Second Timezone [TZ2]", "value": "10" },
-          { "label": "Third Timezone [TZ3]", "value": "11" },
-          { "label": "Moon Phase [LUN]", "value": "12" },
-          { "label": "Heart Rate Variability [HRV]", "value": "13" }
-        ]
-      },
-      {
-        "type": "select",
-        "messageKey": "ActiveSlots3",
-        "label": "Slot 3",
-        "defaultValue": "3",
-        "options": [
-          { "label": "Disabled / Blank", "value": "0" },
-          { "label": "Date [SYS]", "value": "1" },
-          { "label": "Battery Power [PWR]", "value": "2" },
-          { "label": "Free Heap Memory [MEM]", "value": "3" },
-          { "label": "Compass Direction [NAV]", "value": "4" },
-          { "label": "Heart Rate [BPM]", "value": "5" },
-          { "label": "Step Counter [STP]", "value": "6" },
-          { "label": "Weather Condition [MET]", "value": "7" },
-          { "label": "Altitude [ALT]", "value": "8" },
-          { "label": "Custom Web API [API]", "value": "9" },
-          { "label": "Second Timezone [TZ2]", "value": "10" },
-          { "label": "Third Timezone [TZ3]", "value": "11" },
-          { "label": "Moon Phase [LUN]", "value": "12" },
-          { "label": "Heart Rate Variability [HRV]", "value": "13" }
-        ]
-      },
-      {
-        "type": "select",
-        "messageKey": "ActiveSlots4",
-        "label": "Slot 4",
-        "defaultValue": "4",
-        "options": [
-          { "label": "Disabled / Blank", "value": "0" },
-          { "label": "Date [SYS]", "value": "1" },
-          { "label": "Battery Power [PWR]", "value": "2" },
-          { "label": "Free Heap Memory [MEM]", "value": "3" },
-          { "label": "Compass Direction [NAV]", "value": "4" },
-          { "label": "Heart Rate [BPM]", "value": "5" },
-          { "label": "Step Counter [STP]", "value": "6" },
-          { "label": "Weather Condition [MET]", "value": "7" },
-          { "label": "Altitude [ALT]", "value": "8" },
-          { "label": "Custom Web API [API]", "value": "9" },
-          { "label": "Second Timezone [TZ2]", "value": "10" },
-          { "label": "Third Timezone [TZ3]", "value": "11" },
-          { "label": "Moon Phase [LUN]", "value": "12" },
-          { "label": "Heart Rate Variability [HRV]", "value": "13" }
-        ]
-      },
-      {
-        "type": "select",
-        "messageKey": "ActiveSlots5",
-        "label": "Slot 5",
-        "defaultValue": "5",
-        "options": [
-          { "label": "Disabled / Blank", "value": "0" },
-          { "label": "Date [SYS]", "value": "1" },
-          { "label": "Battery Power [PWR]", "value": "2" },
-          { "label": "Free Heap Memory [MEM]", "value": "3" },
-          { "label": "Compass Direction [NAV]", "value": "4" },
-          { "label": "Heart Rate [BPM]", "value": "5" },
-          { "label": "Step Counter [STP]", "value": "6" },
-          { "label": "Weather Condition [MET]", "value": "7" },
-          { "label": "Altitude [ALT]", "value": "8" },
-          { "label": "Custom Web API [API]", "value": "9" },
-          { "label": "Second Timezone [TZ2]", "value": "10" },
-          { "label": "Third Timezone [TZ3]", "value": "11" },
-          { "label": "Moon Phase [LUN]", "value": "12" },
-          { "label": "Heart Rate Variability [HRV]", "value": "13" }
-        ]
-      },
-      {
-        "type": "select",
-        "messageKey": "ActiveSlots6",
-        "label": "Slot 6",
-        "defaultValue": "6",
-        "options": [
-          { "label": "Disabled / Blank", "value": "0" },
-          { "label": "Date [SYS]", "value": "1" },
-          { "label": "Battery Power [PWR]", "value": "2" },
-          { "label": "Free Heap Memory [MEM]", "value": "3" },
-          { "label": "Compass Direction [NAV]", "value": "4" },
-          { "label": "Heart Rate [BPM]", "value": "5" },
-          { "label": "Step Counter [STP]", "value": "6" },
-          { "label": "Weather Condition [MET]", "value": "7" },
-          { "label": "Altitude [ALT]", "value": "8" },
-          { "label": "Custom Web API [API]", "value": "9" },
-          { "label": "Second Timezone [TZ2]", "value": "10" },
-          { "label": "Third Timezone [TZ3]", "value": "11" },
-          { "label": "Moon Phase [LUN]", "value": "12" },
-          { "label": "Heart Rate Variability [HRV]", "value": "13" }
-        ]
-      },
-      {
-        "type": "select",
-        "messageKey": "ActiveSlots7",
-        "label": "Slot 7",
-        "defaultValue": "7",
-        "options": [
-          { "label": "Disabled / Blank", "value": "0" },
-          { "label": "Date [SYS]", "value": "1" },
-          { "label": "Battery Power [PWR]", "value": "2" },
-          { "label": "Free Heap Memory [MEM]", "value": "3" },
-          { "label": "Compass Direction [NAV]", "value": "4" },
-          { "label": "Heart Rate [BPM]", "value": "5" },
-          { "label": "Step Counter [STP]", "value": "6" },
-          { "label": "Weather Condition [MET]", "value": "7" },
-          { "label": "Altitude [ALT]", "value": "8" },
-          { "label": "Custom Web API [API]", "value": "9" },
-          { "label": "Second Timezone [TZ2]", "value": "10" },
-          { "label": "Third Timezone [TZ3]", "value": "11" },
-          { "label": "Moon Phase [LUN]", "value": "12" },
-          { "label": "Heart Rate Variability [HRV]", "value": "13" }
-        ]
-      },
-      {
-        "type": "select",
-        "messageKey": "ActiveSlots8",
-        "label": "Slot 8 (Bottom Line)",
-        "defaultValue": "8",
-        "options": [
-          { "label": "Disabled / Blank", "value": "0" },
-          { "label": "Date [SYS]", "value": "1" },
-          { "label": "Battery Power [PWR]", "value": "2" },
-          { "label": "Free Heap Memory [MEM]", "value": "3" },
-          { "label": "Compass Direction [NAV]", "value": "4" },
-          { "label": "Heart Rate [BPM]", "value": "5" },
-          { "label": "Step Counter [STP]", "value": "6" },
-          { "label": "Weather Condition [MET]", "value": "7" },
-          { "label": "Altitude [ALT]", "value": "8" },
-          { "label": "Custom Web API [API]", "value": "9" },
-          { "label": "Second Timezone [TZ2]", "value": "10" },
-          { "label": "Third Timezone [TZ3]", "value": "11" },
-          { "label": "Moon Phase [LUN]", "value": "12" },
-          { "label": "Heart Rate Variability [HRV]", "value": "13" }
-        ]
       }
     ]
   },

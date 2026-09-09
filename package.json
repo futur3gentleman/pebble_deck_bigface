@@ -1,19 +1,19 @@
 {
-  "author": "keatr0n",
+  "author": "keatr0n (original), lite fork",
   "dependencies": {
     "pebble-clay": "^1.0.4"
   },
   "keywords": [
     "pebble-app"
   ],
-  "name": "pebble-deck",
+  "name": "pebble-deck-lite",
   "pebble": {
     "capabilities": [
       "location",
       "configurable",
       "health"
     ],
-    "displayName": "pebble_deck",
+    "displayName": "deck_lite",
     "enableMultiJS": true,
     "messageKeys": [
       "Conditions",
@@ -22,14 +22,12 @@
       "TextColor",
       "Alt",
       "CustomApi",
-      "ActiveSlots1",
-      "ActiveSlots2",
-      "ActiveSlots3",
-      "ActiveSlots4",
-      "ActiveSlots5",
-      "ActiveSlots6",
-      "ActiveSlots7",
-      "ActiveSlots8",
+      "Panel1",
+      "Panel2",
+      "Panel3",
+      "BatteryCorner",
+      "ShowLabels",
+      "ShowDividers",
       "Tz2Offset",
       "Tz3Offset"
     ],
@@ -38,13 +36,29 @@
       "media": [
         {
           "file": "fonts/ChakraPetch-SemiBold.ttf",
-          "name": "FONT_CHAKRA_56",
+          "name": "FONT_CHAKRA_48",
+          "characterRegex": "[ -~]",
+          "targetPlatforms": null,
+          "type": "font"
+        },
+        {
+          "file": "fonts/ChakraPetch-SemiBold.ttf",
+          "name": "FONT_CHAKRA_32",
+          "characterRegex": "[ -~]",
+          "targetPlatforms": null,
+          "type": "font"
+        },
+        {
+          "file": "fonts/ChakraPetch-SemiBold.ttf",
+          "name": "FONT_CHAKRA_22",
+          "characterRegex": "[ -~]",
           "targetPlatforms": null,
           "type": "font"
         },
         {
           "file": "fonts/ibm-plex-mono.bold.ttf",
           "name": "FONT_IBM_14",
+          "characterRegex": "[ -~]",
           "targetPlatforms": null,
           "type": "font"
         }
@@ -54,10 +68,10 @@
     "targetPlatforms": [
       "emery"
     ],
-    "uuid": "037efe7b-3eaf-442b-8294-0c6b99c008da",
+    "uuid": "cfc36158-8e42-4ad0-8a18-ddb87c3d7a9c",
     "watchapp": {
       "watchface": true
     }
   },
-  "version": "1.2.0"
+  "version": "1.0.0"
 }
