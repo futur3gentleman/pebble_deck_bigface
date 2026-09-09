@@ -35,29 +35,29 @@
     "resources": {
       "media": [
         {
-          "file": "fonts/ChakraPetch-SemiBold.ttf",
-          "name": "FONT_CHAKRA_48",
+          "file": "fonts/Rajdhani-Bold.ttf",
+          "name": "FONT_VALUE_56",
           "characterRegex": "[ -~]",
           "targetPlatforms": null,
           "type": "font"
         },
         {
-          "file": "fonts/ChakraPetch-SemiBold.ttf",
-          "name": "FONT_CHAKRA_32",
-          "characterRegex": "[ -~]",
-          "targetPlatforms": null,
-          "type": "font"
-        },
-        {
-          "file": "fonts/ChakraPetch-SemiBold.ttf",
-          "name": "FONT_CHAKRA_22",
+          "file": "fonts/Rajdhani-Bold.ttf",
+          "name": "FONT_VALUE_40",
           "characterRegex": "[ -~]",
           "targetPlatforms": null,
           "type": "font"
         },
         {
           "file": "fonts/ibm-plex-mono.bold.ttf",
-          "name": "FONT_IBM_14",
+          "name": "FONT_CAPTION_18",
+          "characterRegex": "[ -~]",
+          "targetPlatforms": null,
+          "type": "font"
+        },
+        {
+          "file": "fonts/ibm-plex-mono.bold.ttf",
+          "name": "FONT_SMALL_14",
           "characterRegex": "[ -~]",
           "targetPlatforms": null,
           "type": "font"
@@ -73,5 +73,5 @@
       "watchface": true
     }
   },
-  "version": "1.0.0"
+  "version": "1.2.0"
 }

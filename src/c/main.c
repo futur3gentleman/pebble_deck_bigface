@@ -77,11 +77,30 @@ static Layer *s_window_layer;
 static Layer *s_canvas_layer;   // Draws the three panels
 static Layer *s_battery_layer;  // Draws the small corner battery on top
 
-// Fonts: three sizes of the value font so long strings can step down, plus the caption font.
-static GFont s_font_big;
-static GFont s_font_mid;
-static GFont s_font_small;
+// --- LAYOUT -----------------------------------------------------------------------------
+// Pebble draws a line of a font compiled at size N in a box N px tall with the baseline on the
+// bottom edge. Digits only fill the top ~70% of that box, so we position by baseline and cap
+// height (measured from the TTFs - see readme) rather than by box edges.
+//
+// Every value is drawn at one fixed size. The only exception is a string too wide for the
+// screen (e.g. "WAX GIBB"), which uses the single fallback size instead of being clipped.
+#define VALUE_FONT_SIZE     56
+#define VALUE_FONT_CAP      37   // digit height in px at VALUE_FONT_SIZE
+#define FALLBACK_FONT_SIZE  40
+#define FALLBACK_FONT_CAP   26
+#define CAPTION_FONT_SIZE   18
+#define CAPTION_FONT_CAP    13
+#define SMALL_FONT_SIZE     14
+#define SMALL_FONT_CAP      10
+#define CAPTION_VALUE_GAP    5   // space between caption bottom and value top
+#define SIDE_MARGIN          6
+#define BATTERY_PAD          3
+#define BATTERY_GAP          2   // min clearance between a value and the battery text
+
+static GFont s_font_value;
+static GFont s_font_fallback;
 static GFont s_font_caption;
+static GFont s_font_small;
 
 // Per-panel text
 static char s_value[NUM_PANELS][32];
@@ -236,7 +255,7 @@ static void prv_fill_panel(ComplicationType comp, char *label, size_t llen, char
       time_t now = time(NULL);
       struct tm *t = localtime(&now);
       strftime(value, vlen, "%a %d", t);
-      strftime(label, llen, "%B %Y", t);
+      strftime(label, llen, "%b %Y", t);
       prv_upper(value);
       prv_upper(label);
       break;
@@ -360,6 +379,7 @@ static void render_panels() {
   }
   // Repainting costs more than comparing, and most events change nothing on screen.
   if (changed && s_canvas_layer) layer_mark_dirty(s_canvas_layer);
+  if (changed && s_battery_layer) layer_mark_dirty(s_battery_layer);  // its position depends on the bottom value
 }
 
 static void render_battery() {
@@ -380,27 +400,56 @@ static void prv_update_display() {
 }
 
 // --- DRAWING ----------------------------------------------------------------------------
-// Pick the largest font whose rendered width fits inside `width`.
-static GFont prv_pick_font(GContext *ctx, const char *text, int width, int height) {
-  GFont candidates[3] = { s_font_big, s_font_mid, s_font_small };
-  GFont chosen = s_font_small;
-  for (int i = 0; i < 3; i++) {
-    GSize sz = graphics_text_layout_get_content_size(text, candidates[i], GRect(0, 0, 1000, height),
-                                                     GTextOverflowModeWordWrap, GTextAlignmentCenter);
-    if (sz.w <= width) {
-      chosen = candidates[i];
-      break;
-    }
-  }
-  return chosen;
+static int prv_text_width(const char *text, GFont font) {
+  return graphics_text_layout_get_content_size(text, font, GRect(0, 0, 1000, 200),
+                                               GTextOverflowModeWordWrap, GTextAlignmentLeft).w;
 }
 
-static void prv_draw_centered(GContext *ctx, const char *text, GFont font, GRect box) {
-  GSize sz = graphics_text_layout_get_content_size(text, font, GRect(0, 0, box.size.w, 1000),
-                                                   GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter);
-  int y = box.origin.y + (box.size.h - sz.h) / 2;
-  graphics_draw_text(ctx, text, font, GRect(box.origin.x, y, box.size.w, sz.h + 4),
-                     GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL);
+// Draw one line so that its baseline sits on `baseline_y`, centred on `cx`.
+static void prv_draw_baseline(GContext *ctx, const char *text, GFont font, int font_size,
+                              int cx, int baseline_y, int width) {
+  graphics_draw_text(ctx, text, font, GRect(cx - width / 2, baseline_y - font_size, width, font_size + 2),
+                     GTextOverflowModeWordWrap, GTextAlignmentCenter, NULL);
+}
+
+static bool prv_battery_is_left(void) {
+  return settings.BatteryCorner == CORNER_TOP_LEFT || settings.BatteryCorner == CORNER_BOTTOM_LEFT;
+}
+static bool prv_battery_is_top(void) {
+  return settings.BatteryCorner == CORNER_TOP_LEFT || settings.BatteryCorner == CORNER_TOP_RIGHT;
+}
+
+// Horizontal extent of the battery text, in canvas coordinates.
+static void prv_battery_extent(GRect bounds, int *left, int *right) {
+  int w = prv_text_width(s_battery_text, s_font_small);
+  if (prv_battery_is_left()) {
+    *left = BATTERY_PAD;
+    *right = BATTERY_PAD + w;
+  } else {
+    *right = bounds.size.w - BATTERY_PAD;
+    *left = *right - w;
+  }
+}
+
+// Does the value in the battery's panel overlap the battery text horizontally?
+static bool prv_value_hits_battery(GRect bounds, int value_w) {
+  int bl, br;
+  prv_battery_extent(bounds, &bl, &br);
+  int cx = bounds.size.w / 2;
+  int vl = cx - value_w / 2, vr = cx + value_w / 2;
+  return prv_battery_is_left() ? (vl < br + BATTERY_GAP) : (vr > bl - BATTERY_GAP);
+}
+
+// True when a bottom-corner battery has to move up into the caption row of the bottom
+// panel because the value there is too wide to share the row with it.
+static bool prv_battery_bumped(GRect bounds) {
+  if (settings.BatteryCorner == CORNER_OFF || prv_battery_is_top()) return false;
+  const char *val = s_value[NUM_PANELS - 1];
+  if (val[0] == '\0') return false;
+  int w = prv_text_width(val, s_font_value);
+  GFont f = s_font_value;
+  if (w > bounds.size.w - 2 * SIDE_MARGIN) { f = s_font_fallback; w = prv_text_width(val, f); }
+  return prv_value_hits_battery(bounds, w);
 }
 
 static void canvas_update_proc(Layer *layer, GContext *ctx) {
@@ -409,32 +458,35 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
   graphics_context_set_stroke_color(ctx, settings.TextColor);
   graphics_context_set_stroke_width(ctx, 1);
 
-  const int margin_x = 6;
   int panel_h = bounds.size.h / NUM_PANELS;
+  int cx = bounds.size.w / 2;
+  int max_w = bounds.size.w - 2 * SIDE_MARGIN;
 
   for (int i = 0; i < NUM_PANELS; i++) {
-    GRect panel = GRect(margin_x, i * panel_h, bounds.size.w - 2 * margin_x, panel_h);
+    int top = i * panel_h;
 
     if (settings.ShowDividers && i > 0) {
-      graphics_draw_line(ctx, GPoint(panel.origin.x + 10, panel.origin.y),
-                         GPoint(panel.origin.x + panel.size.w - 10, panel.origin.y));
+      graphics_draw_line(ctx, GPoint(SIDE_MARGIN + 10, top), GPoint(bounds.size.w - SIDE_MARGIN - 10, top));
+    }
+    if (settings.Panels[i] == COMP_NONE || s_value[i][0] == '\0') continue;
+
+    GFont font = s_font_value;
+    int font_size = VALUE_FONT_SIZE, cap = VALUE_FONT_CAP;
+    if (prv_text_width(s_value[i], font) > max_w) {
+      font = s_font_fallback;
+      font_size = FALLBACK_FONT_SIZE;
+      cap = FALLBACK_FONT_CAP;
     }
 
-    if (settings.Panels[i] == COMP_NONE) continue;
-
+    // Caption + gap + value form one block, centred vertically in the panel.
     bool show_label = settings.ShowLabels && s_label[i][0] != '\0';
-    int label_h = show_label ? 16 : 0;
+    int block_h = (show_label ? CAPTION_FONT_CAP + CAPTION_VALUE_GAP : 0) + cap;
+    int block_top = top + (panel_h - block_h) / 2;
 
     if (show_label) {
-      graphics_draw_text(ctx, s_label[i], s_font_caption,
-                         GRect(panel.origin.x, panel.origin.y + 2, panel.size.w, label_h),
-                         GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL);
+      prv_draw_baseline(ctx, s_label[i], s_font_caption, CAPTION_FONT_SIZE, cx, block_top + CAPTION_FONT_CAP, max_w);
     }
-
-    GRect value_box = GRect(panel.origin.x, panel.origin.y + label_h,
-                            panel.size.w, panel.size.h - label_h);
-    GFont font = prv_pick_font(ctx, s_value[i], value_box.size.w, value_box.size.h);
-    prv_draw_centered(ctx, s_value[i], font, value_box);
+    prv_draw_baseline(ctx, s_value[i], font, font_size, cx, block_top + block_h, max_w);
   }
 }
 
@@ -443,15 +495,22 @@ static void battery_update_proc(Layer *layer, GContext *ctx) {
   GRect bounds = layer_get_bounds(layer);
   graphics_context_set_text_color(ctx, settings.TextColor);
 
-  const int w = 44, h = 16, pad = 3;
-  int x = (settings.BatteryCorner == CORNER_TOP_LEFT || settings.BatteryCorner == CORNER_BOTTOM_LEFT)
-          ? pad : bounds.size.w - w - pad;
-  int y = (settings.BatteryCorner == CORNER_TOP_LEFT || settings.BatteryCorner == CORNER_TOP_RIGHT)
-          ? pad : bounds.size.h - h - pad;
-  GTextAlignment align = (x == pad) ? GTextAlignmentLeft : GTextAlignmentRight;
+  int w = prv_text_width(s_battery_text, s_font_small) + 2;
+  int x = prv_battery_is_left() ? BATTERY_PAD : bounds.size.w - BATTERY_PAD - w;
+  int baseline;
+  if (prv_battery_is_top()) {
+    baseline = BATTERY_PAD + SMALL_FONT_CAP;
+  } else if (prv_battery_bumped(bounds)) {
+    int panel_h = bounds.size.h / NUM_PANELS;
+    baseline = (NUM_PANELS - 1) * panel_h + BATTERY_PAD + SMALL_FONT_CAP;
+  } else {
+    baseline = bounds.size.h - BATTERY_PAD;
+  }
 
-  graphics_draw_text(ctx, s_battery_text, s_font_caption, GRect(x, y, w, h),
-                     GTextOverflowModeTrailingEllipsis, align, NULL);
+  graphics_draw_text(ctx, s_battery_text, s_font_small,
+                     GRect(x, baseline - SMALL_FONT_SIZE, w, SMALL_FONT_SIZE + 2),
+                     GTextOverflowModeWordWrap,
+                     prv_battery_is_left() ? GTextAlignmentLeft : GTextAlignmentRight, NULL);
 }
 
 // --- DATA UPDATERS ----------------------------------------------------------------------
@@ -760,10 +819,10 @@ static void main_window_load(Window *window) {
   s_window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_unobstructed_bounds(s_window_layer);
 
-  s_font_big     = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_CHAKRA_48));
-  s_font_mid     = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_CHAKRA_32));
-  s_font_small   = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_CHAKRA_22));
-  s_font_caption = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_IBM_14));
+  s_font_value    = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_VALUE_56));
+  s_font_fallback = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_VALUE_40));
+  s_font_caption  = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_CAPTION_18));
+  s_font_small    = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_SMALL_14));
 
   s_canvas_layer = layer_create(bounds);
   layer_set_update_proc(s_canvas_layer, canvas_update_proc);
@@ -784,10 +843,10 @@ static void main_window_unload(Window *window) {
   layer_destroy(s_battery_layer);
   s_canvas_layer = NULL;
   s_battery_layer = NULL;
-  fonts_unload_custom_font(s_font_big);
-  fonts_unload_custom_font(s_font_mid);
-  fonts_unload_custom_font(s_font_small);
+  fonts_unload_custom_font(s_font_value);
+  fonts_unload_custom_font(s_font_fallback);
   fonts_unload_custom_font(s_font_caption);
+  fonts_unload_custom_font(s_font_small);
 }
 
 static void init() {
