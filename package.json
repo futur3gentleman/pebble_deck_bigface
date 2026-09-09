@@ -1,19 +1,19 @@
 {
-  "author": "keatr0n (original), lite fork",
+  "author": "futur3gentleman (fork of pebble_deck by keatr0n)",
   "dependencies": {
     "pebble-clay": "^1.0.4"
   },
   "keywords": [
     "pebble-app"
   ],
-  "name": "pebble-deck-lite",
+  "name": "pebble-deck-bigface",
   "pebble": {
     "capabilities": [
       "location",
       "configurable",
       "health"
     ],
-    "displayName": "deck_lite",
+    "displayName": "pebble_deck_bigface",
     "enableMultiJS": true,
     "messageKeys": [
       "Conditions",
